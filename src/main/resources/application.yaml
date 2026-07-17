@@ -1,0 +1,44 @@
+server:
+  port: 8080
+
+db:
+
+  source: jdbc
+
+  connection:
+
+    url: jdbc:postgresql://localhost:5433/rest_post
+
+    username: postgres
+
+    password: 91Scarletnaomi
+
+  pool:
+
+    maxSize: 10
+
+    minSize: 2
+
+    connectionTimeoutMillis: 5000
+
+cors:
+
+  paths:
+
+    - path-pattern: "/api/.*"
+
+      allow-origins:
+
+        - "http://localhost:5173"
+
+      allow-methods:
+
+        - "GET"
+        - "POST"
+        - "PUT"
+        - "DELETE"
+        - "OPTIONS"
+
+      allow-headers:
+
+        - "*"
