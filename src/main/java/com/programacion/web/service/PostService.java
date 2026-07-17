@@ -9,11 +9,15 @@ public class PostService {
 
     private final PostRepository repository;
 
+    private final UserService userService;
+
     public PostService(
-            PostRepository repository
+            PostRepository repository,
+            UserService userService
     ) {
 
         this.repository = repository;
+        this.userService = userService;
 
     }
 
@@ -35,6 +39,16 @@ public class PostService {
             Post post
     ) {
 
+        if (!userService.existsById(
+                post.userId()
+        )) {
+
+            throw new IllegalArgumentException(
+                    "userId no existe"
+            );
+
+        }
+
         return repository.create(post);
 
     }
@@ -43,6 +57,16 @@ public class PostService {
             Integer id,
             Post post
     ) {
+
+        if (!userService.existsById(
+                post.userId()
+        )) {
+
+            throw new IllegalArgumentException(
+                    "userId no existe"
+            );
+
+        }
 
         return repository.update(
                 id,
@@ -56,6 +80,14 @@ public class PostService {
     ) {
 
         return repository.delete(id);
+
+    }
+
+    public boolean existsById(
+            Integer id
+    ) {
+
+        return repository.existsById(id);
 
     }
 

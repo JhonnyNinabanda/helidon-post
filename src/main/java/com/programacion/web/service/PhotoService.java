@@ -9,11 +9,15 @@ public class PhotoService {
 
     private final PhotoRepository repository;
 
+    private final AlbumService albumService;
+
     public PhotoService(
-            PhotoRepository repository
+            PhotoRepository repository,
+            AlbumService albumService
     ) {
 
         this.repository = repository;
+        this.albumService = albumService;
 
     }
 
@@ -35,6 +39,16 @@ public class PhotoService {
             Photo photo
     ) {
 
+        if (!albumService.existsById(
+                photo.albumId()
+        )) {
+
+            throw new IllegalArgumentException(
+                    "albumId no existe"
+            );
+
+        }
+
         return repository.create(photo);
 
     }
@@ -43,6 +57,16 @@ public class PhotoService {
             Integer id,
             Photo photo
     ) {
+
+        if (!albumService.existsById(
+                photo.albumId()
+        )) {
+
+            throw new IllegalArgumentException(
+                    "albumId no existe"
+            );
+
+        }
 
         return repository.update(
                 id,

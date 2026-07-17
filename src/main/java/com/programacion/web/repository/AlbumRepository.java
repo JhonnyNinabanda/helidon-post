@@ -10,6 +10,8 @@ public interface AlbumRepository {
 
     Album findById(Integer id);
 
+    boolean existsById(Integer id);
+
     Album create(Album album);
 
     Album update(

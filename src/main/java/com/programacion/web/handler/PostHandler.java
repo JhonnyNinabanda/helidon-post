@@ -4,6 +4,7 @@ import com.programacion.web.model.Post;
 import com.programacion.web.response.ErrorResponse;
 import com.programacion.web.response.MessageResponse;
 import com.programacion.web.service.PostService;
+import com.programacion.web.util.CorsUtil;
 
 import io.helidon.webserver.http.ServerRequest;
 import io.helidon.webserver.http.ServerResponse;
@@ -24,6 +25,7 @@ public class PostHandler {
             ServerRequest request,
             ServerResponse response
     ) {
+        CorsUtil.apply(response);
 
         response.send(
                 service.findAll()
@@ -35,6 +37,7 @@ public class PostHandler {
             ServerRequest request,
             ServerResponse response
     ) {
+        CorsUtil.apply(response);
 
         Integer id =
                 Integer.parseInt(
@@ -73,16 +76,36 @@ public class PostHandler {
             ServerResponse response
     ) {
 
-        Post post =
-                request.content()
-                        .as(Post.class);
+        CorsUtil.apply(response);
 
-        Post created =
-                service.create(post);
+        try {
 
-        response.status(201);
+            Post post =
+                    request.content()
+                            .as(Post.class);
 
-        response.send(created);
+            Post created =
+                    service.create(post);
+
+            response.status(201);
+
+            response.send(created);
+
+        } catch (
+                IllegalArgumentException e
+        ) {
+
+            response.status(400);
+
+            response.send(
+
+                    new ErrorResponse(
+                            e.getMessage()
+                    )
+
+            );
+
+        }
 
     }
 
@@ -91,42 +114,44 @@ public class PostHandler {
             ServerResponse response
     ) {
 
-        Integer id =
-                Integer.parseInt(
+        CorsUtil.apply(response);
 
-                        request.path()
-                                .pathParameters()
-                                .get("id")
+        try {
 
-                );
+            Integer id =
+                    Integer.parseInt(
+                            request.path()
+                                    .pathParameters()
+                                    .get("id")
+                    );
 
-        Post post =
-                request.content()
-                        .as(Post.class);
+            Post post =
+                    request.content()
+                            .as(Post.class);
 
-        Post updated =
-                service.update(
-                        id,
-                        post
-                );
+            Post updated =
+                    service.update(
+                            id,
+                            post
+                    );
 
-        if (updated == null) {
+            response.send(updated);
 
-            response.status(404);
+        } catch (
+                IllegalArgumentException e
+        ) {
+
+            response.status(400);
 
             response.send(
 
                     new ErrorResponse(
-                            "Post no encontrado"
+                            e.getMessage()
                     )
 
             );
 
-            return;
-
         }
-
-        response.send(updated);
 
     }
 
@@ -134,6 +159,7 @@ public class PostHandler {
             ServerRequest request,
             ServerResponse response
     ) {
+        CorsUtil.apply(response);
 
         Integer id =
                 Integer.parseInt(

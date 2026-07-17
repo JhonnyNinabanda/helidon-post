@@ -7,6 +7,7 @@ import com.programacion.web.service.UserService;
 
 import io.helidon.webserver.http.ServerRequest;
 import io.helidon.webserver.http.ServerResponse;
+import com.programacion.web.util.CorsUtil;
 
 public class UserHandler {
 
@@ -24,6 +25,7 @@ public class UserHandler {
             ServerRequest request,
             ServerResponse response
     ) {
+        CorsUtil.apply(response);
 
         response.send(
                 service.findAll()
@@ -35,6 +37,7 @@ public class UserHandler {
             ServerRequest request,
             ServerResponse response
     ) {
+        CorsUtil.apply(response);
 
         Integer id =
                 Integer.parseInt(
@@ -72,6 +75,7 @@ public class UserHandler {
             ServerRequest request,
             ServerResponse response
     ) {
+        CorsUtil.apply(response);
 
         User user =
                 request.content()
@@ -90,6 +94,7 @@ public class UserHandler {
             ServerRequest request,
             ServerResponse response
     ) {
+        CorsUtil.apply(response);
 
         Integer id =
                 Integer.parseInt(
@@ -118,6 +123,7 @@ public class UserHandler {
             ServerRequest request,
             ServerResponse response
     ) {
+        CorsUtil.apply(response);
 
         Integer id =
                 Integer.parseInt(

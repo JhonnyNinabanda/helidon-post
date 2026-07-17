@@ -4,6 +4,7 @@ import com.programacion.web.model.Todo;
 import com.programacion.web.response.ErrorResponse;
 import com.programacion.web.response.MessageResponse;
 import com.programacion.web.service.TodoService;
+import com.programacion.web.util.CorsUtil;
 
 import io.helidon.webserver.http.ServerRequest;
 import io.helidon.webserver.http.ServerResponse;
@@ -24,6 +25,7 @@ public class TodoHandler {
             ServerRequest request,
             ServerResponse response
     ) {
+        CorsUtil.apply(response);
 
         response.send(
                 service.findAll()
@@ -35,6 +37,7 @@ public class TodoHandler {
             ServerRequest request,
             ServerResponse response
     ) {
+        CorsUtil.apply(response);
 
         Integer id =
                 Integer.parseInt(
@@ -69,16 +72,36 @@ public class TodoHandler {
             ServerResponse response
     ) {
 
-        Todo todo =
-                request.content()
-                        .as(Todo.class);
+        CorsUtil.apply(response);
 
-        Todo created =
-                service.create(todo);
+        try {
 
-        response.status(201);
+            Todo todo =
+                    request.content()
+                            .as(Todo.class);
 
-        response.send(created);
+            Todo created =
+                    service.create(todo);
+
+            response.status(201);
+
+            response.send(created);
+
+        } catch (
+                IllegalArgumentException e
+        ) {
+
+            response.status(400);
+
+            response.send(
+
+                    new ErrorResponse(
+                            e.getMessage()
+                    )
+
+            );
+
+        }
 
     }
 
@@ -87,23 +110,44 @@ public class TodoHandler {
             ServerResponse response
     ) {
 
-        Integer id =
-                Integer.parseInt(
-                        request.path()
-                                .pathParameters()
-                                .get("id")
-                );
+        CorsUtil.apply(response);
 
-        Todo todo =
-                request.content()
-                        .as(Todo.class);
+        try {
 
-        response.send(
-                service.update(
-                        id,
-                        todo
-                )
-        );
+            Integer id =
+                    Integer.parseInt(
+                            request.path()
+                                    .pathParameters()
+                                    .get("id")
+                    );
+
+            Todo todo =
+                    request.content()
+                            .as(Todo.class);
+
+            Todo updated =
+                    service.update(
+                            id,
+                            todo
+                    );
+
+            response.send(updated);
+
+        } catch (
+                IllegalArgumentException e
+        ) {
+
+            response.status(400);
+
+            response.send(
+
+                    new ErrorResponse(
+                            e.getMessage()
+                    )
+
+            );
+
+        }
 
     }
 
@@ -111,6 +155,7 @@ public class TodoHandler {
             ServerRequest request,
             ServerResponse response
     ) {
+        CorsUtil.apply(response);
 
         Integer id =
                 Integer.parseInt(

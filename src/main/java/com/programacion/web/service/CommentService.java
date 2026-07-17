@@ -9,13 +9,18 @@ public class CommentService {
 
     private final CommentRepository repository;
 
+    private final PostService postService;
+
     public CommentService(
-            CommentRepository repository
+            CommentRepository repository,
+            PostService postService
     ) {
 
         this.repository = repository;
+        this.postService = postService;
 
     }
+
 
     public List<Comment> findAll() {
 
@@ -35,6 +40,16 @@ public class CommentService {
             Comment comment
     ) {
 
+        if (!postService.existsById(
+                comment.postId()
+        )) {
+
+            throw new IllegalArgumentException(
+                    "postId no existe"
+            );
+
+        }
+
         return repository.create(comment);
 
     }
@@ -43,6 +58,16 @@ public class CommentService {
             Integer id,
             Comment comment
     ) {
+
+        if (!postService.existsById(
+                comment.postId()
+        )) {
+
+            throw new IllegalArgumentException(
+                    "postId no existe"
+            );
+
+        }
 
         return repository.update(
                 id,

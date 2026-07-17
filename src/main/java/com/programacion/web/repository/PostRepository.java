@@ -8,6 +8,8 @@ public interface PostRepository {
 
     List<Post> findAll();
 
+    boolean existsById(Integer id);
+
     Post findById(Integer id);
 
     Post create(Post post);

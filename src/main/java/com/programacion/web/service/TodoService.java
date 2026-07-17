@@ -9,11 +9,15 @@ public class TodoService {
 
     private final TodoRepository repository;
 
+    private final UserService userService;
+
     public TodoService(
-            TodoRepository repository
+            TodoRepository repository,
+            UserService userService
     ) {
 
         this.repository = repository;
+        this.userService = userService;
 
     }
 
@@ -35,6 +39,16 @@ public class TodoService {
             Todo todo
     ) {
 
+        if (!userService.existsById(
+                todo.userId()
+        )) {
+
+            throw new IllegalArgumentException(
+                    "userId no existe"
+            );
+
+        }
+
         return repository.create(todo);
 
     }
@@ -43,6 +57,16 @@ public class TodoService {
             Integer id,
             Todo todo
     ) {
+
+        if (!userService.existsById(
+                todo.userId()
+        )) {
+
+            throw new IllegalArgumentException(
+                    "userId no existe"
+            );
+
+        }
 
         return repository.update(
                 id,

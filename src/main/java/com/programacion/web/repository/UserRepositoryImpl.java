@@ -312,4 +312,24 @@ public class UserRepositoryImpl
 
     }
 
+    @Override
+    public boolean existsById(
+            Integer id
+    ) {
+
+        return DbClientProvider.getDbClient()
+                .execute()
+                .query(
+                        """
+                        SELECT id
+                        FROM users
+                        WHERE id = ?
+                        """,
+                        id
+                )
+                .findFirst()
+                .isPresent();
+
+    }
+
 }

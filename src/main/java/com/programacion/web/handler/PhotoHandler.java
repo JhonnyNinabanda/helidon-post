@@ -4,6 +4,7 @@ import com.programacion.web.model.Photo;
 import com.programacion.web.response.ErrorResponse;
 import com.programacion.web.response.MessageResponse;
 import com.programacion.web.service.PhotoService;
+import com.programacion.web.util.CorsUtil;
 
 import io.helidon.webserver.http.ServerRequest;
 import io.helidon.webserver.http.ServerResponse;
@@ -24,6 +25,7 @@ public class PhotoHandler {
             ServerRequest request,
             ServerResponse response
     ) {
+        CorsUtil.apply(response);
 
         response.send(
                 service.findAll()
@@ -35,6 +37,7 @@ public class PhotoHandler {
             ServerRequest request,
             ServerResponse response
     ) {
+        CorsUtil.apply(response);
 
         Integer id =
                 Integer.parseInt(
@@ -69,16 +72,36 @@ public class PhotoHandler {
             ServerResponse response
     ) {
 
-        Photo photo =
-                request.content()
-                        .as(Photo.class);
+        CorsUtil.apply(response);
 
-        Photo created =
-                service.create(photo);
+        try {
 
-        response.status(201);
+            Photo photo =
+                    request.content()
+                            .as(Photo.class);
 
-        response.send(created);
+            Photo created =
+                    service.create(photo);
+
+            response.status(201);
+
+            response.send(created);
+
+        } catch (
+                IllegalArgumentException e
+        ) {
+
+            response.status(400);
+
+            response.send(
+
+                    new ErrorResponse(
+                            e.getMessage()
+                    )
+
+            );
+
+        }
 
     }
 
@@ -87,23 +110,44 @@ public class PhotoHandler {
             ServerResponse response
     ) {
 
-        Integer id =
-                Integer.parseInt(
-                        request.path()
-                                .pathParameters()
-                                .get("id")
-                );
+        CorsUtil.apply(response);
 
-        Photo photo =
-                request.content()
-                        .as(Photo.class);
+        try {
 
-        response.send(
-                service.update(
-                        id,
-                        photo
-                )
-        );
+            Integer id =
+                    Integer.parseInt(
+                            request.path()
+                                    .pathParameters()
+                                    .get("id")
+                    );
+
+            Photo photo =
+                    request.content()
+                            .as(Photo.class);
+
+            Photo updated =
+                    service.update(
+                            id,
+                            photo
+                    );
+
+            response.send(updated);
+
+        } catch (
+                IllegalArgumentException e
+        ) {
+
+            response.status(400);
+
+            response.send(
+
+                    new ErrorResponse(
+                            e.getMessage()
+                    )
+
+            );
+
+        }
 
     }
 
@@ -111,6 +155,7 @@ public class PhotoHandler {
             ServerRequest request,
             ServerResponse response
     ) {
+        CorsUtil.apply(response);
 
         Integer id =
                 Integer.parseInt(

@@ -4,6 +4,7 @@ import com.programacion.web.model.Comment;
 import com.programacion.web.response.ErrorResponse;
 import com.programacion.web.response.MessageResponse;
 import com.programacion.web.service.CommentService;
+import com.programacion.web.util.CorsUtil;
 
 import io.helidon.webserver.http.ServerRequest;
 import io.helidon.webserver.http.ServerResponse;
@@ -24,6 +25,7 @@ public class CommentHandler {
             ServerRequest request,
             ServerResponse response
     ) {
+        CorsUtil.apply(response);
 
         response.send(
                 service.findAll()
@@ -35,6 +37,7 @@ public class CommentHandler {
             ServerRequest request,
             ServerResponse response
     ) {
+        CorsUtil.apply(response);
 
         Integer id =
                 Integer.parseInt(
@@ -69,16 +72,36 @@ public class CommentHandler {
             ServerResponse response
     ) {
 
-        Comment comment =
-                request.content()
-                        .as(Comment.class);
+        CorsUtil.apply(response);
 
-        Comment created =
-                service.create(comment);
+        try {
 
-        response.status(201);
+            Comment comment =
+                    request.content()
+                            .as(Comment.class);
 
-        response.send(created);
+            Comment created =
+                    service.create(comment);
+
+            response.status(201);
+
+            response.send(created);
+
+        } catch (
+                IllegalArgumentException e
+        ) {
+
+            response.status(400);
+
+            response.send(
+
+                    new ErrorResponse(
+                            e.getMessage()
+                    )
+
+            );
+
+        }
 
     }
 
@@ -87,23 +110,44 @@ public class CommentHandler {
             ServerResponse response
     ) {
 
-        Integer id =
-                Integer.parseInt(
-                        request.path()
-                                .pathParameters()
-                                .get("id")
-                );
+        CorsUtil.apply(response);
 
-        Comment comment =
-                request.content()
-                        .as(Comment.class);
+        try {
 
-        response.send(
-                service.update(
-                        id,
-                        comment
-                )
-        );
+            Integer id =
+                    Integer.parseInt(
+                            request.path()
+                                    .pathParameters()
+                                    .get("id")
+                    );
+
+            Comment comment =
+                    request.content()
+                            .as(Comment.class);
+
+            Comment updated =
+                    service.update(
+                            id,
+                            comment
+                    );
+
+            response.send(updated);
+
+        } catch (
+                IllegalArgumentException e
+        ) {
+
+            response.status(400);
+
+            response.send(
+
+                    new ErrorResponse(
+                            e.getMessage()
+                    )
+
+            );
+
+        }
 
     }
 
@@ -111,6 +155,7 @@ public class CommentHandler {
             ServerRequest request,
             ServerResponse response
     ) {
+        CorsUtil.apply(response);
 
         Integer id =
                 Integer.parseInt(

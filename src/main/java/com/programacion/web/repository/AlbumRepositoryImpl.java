@@ -164,4 +164,24 @@ public class AlbumRepositoryImpl
 
     }
 
+    @Override
+    public boolean existsById(
+            Integer id
+    ) {
+
+        return DbClientProvider.getDbClient()
+                .execute()
+                .query(
+                        """
+                        SELECT id
+                        FROM albums
+                        WHERE id = ?
+                        """,
+                        id
+                )
+                .findFirst()
+                .isPresent();
+
+    }
+
 }

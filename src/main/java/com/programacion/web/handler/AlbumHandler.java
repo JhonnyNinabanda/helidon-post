@@ -4,6 +4,7 @@ import com.programacion.web.model.Album;
 import com.programacion.web.response.ErrorResponse;
 import com.programacion.web.response.MessageResponse;
 import com.programacion.web.service.AlbumService;
+import com.programacion.web.util.CorsUtil;
 
 import io.helidon.webserver.http.ServerRequest;
 import io.helidon.webserver.http.ServerResponse;
@@ -24,7 +25,7 @@ public class AlbumHandler {
             ServerRequest request,
             ServerResponse response
     ) {
-
+        CorsUtil.apply(response);
         response.send(
                 service.findAll()
         );
@@ -35,6 +36,7 @@ public class AlbumHandler {
             ServerRequest request,
             ServerResponse response
     ) {
+        CorsUtil.apply(response);
 
         Integer id =
                 Integer.parseInt(
@@ -69,16 +71,36 @@ public class AlbumHandler {
             ServerResponse response
     ) {
 
-        Album album =
-                request.content()
-                        .as(Album.class);
+        CorsUtil.apply(response);
 
-        Album created =
-                service.create(album);
+        try {
 
-        response.status(201);
+            Album album =
+                    request.content()
+                            .as(Album.class);
 
-        response.send(created);
+            Album created =
+                    service.create(album);
+
+            response.status(201);
+
+            response.send(created);
+
+        } catch (
+                IllegalArgumentException e
+        ) {
+
+            response.status(400);
+
+            response.send(
+
+                    new ErrorResponse(
+                            e.getMessage()
+                    )
+
+            );
+
+        }
 
     }
 
@@ -87,23 +109,44 @@ public class AlbumHandler {
             ServerResponse response
     ) {
 
-        Integer id =
-                Integer.parseInt(
-                        request.path()
-                                .pathParameters()
-                                .get("id")
-                );
+        CorsUtil.apply(response);
 
-        Album album =
-                request.content()
-                        .as(Album.class);
+        try {
 
-        response.send(
-                service.update(
-                        id,
-                        album
-                )
-        );
+            Integer id =
+                    Integer.parseInt(
+                            request.path()
+                                    .pathParameters()
+                                    .get("id")
+                    );
+
+            Album album =
+                    request.content()
+                            .as(Album.class);
+
+            Album updated =
+                    service.update(
+                            id,
+                            album
+                    );
+
+            response.send(updated);
+
+        } catch (
+                IllegalArgumentException e
+        ) {
+
+            response.status(400);
+
+            response.send(
+
+                    new ErrorResponse(
+                            e.getMessage()
+                    )
+
+            );
+
+        }
 
     }
 
@@ -111,6 +154,7 @@ public class AlbumHandler {
             ServerRequest request,
             ServerResponse response
     ) {
+        CorsUtil.apply(response);
 
         Integer id =
                 Integer.parseInt(

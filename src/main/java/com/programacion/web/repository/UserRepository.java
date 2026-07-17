@@ -10,6 +10,8 @@ public interface UserRepository {
 
     User findById(Integer id);
 
+    boolean existsById(Integer id);
+
     User create(User user);
 
     User update(

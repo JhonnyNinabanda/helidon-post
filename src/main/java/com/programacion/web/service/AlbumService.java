@@ -9,11 +9,15 @@ public class AlbumService {
 
     private final AlbumRepository repository;
 
+    private final UserService userService;
+
     public AlbumService(
-            AlbumRepository repository
+            AlbumRepository repository,
+            UserService userService
     ) {
 
         this.repository = repository;
+        this.userService = userService;
 
     }
 
@@ -35,6 +39,16 @@ public class AlbumService {
             Album album
     ) {
 
+        if (!userService.existsById(
+                album.userId()
+        )) {
+
+            throw new IllegalArgumentException(
+                    "userId no existe"
+            );
+
+        }
+
         return repository.create(album);
 
     }
@@ -43,6 +57,16 @@ public class AlbumService {
             Integer id,
             Album album
     ) {
+
+        if (!userService.existsById(
+                album.userId()
+        )) {
+
+            throw new IllegalArgumentException(
+                    "userId no existe"
+            );
+
+        }
 
         return repository.update(
                 id,
@@ -56,6 +80,14 @@ public class AlbumService {
     ) {
 
         return repository.delete(id);
+
+    }
+
+    public boolean existsById(
+            Integer id
+    ) {
+
+        return repository.existsById(id);
 
     }
 

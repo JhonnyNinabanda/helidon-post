@@ -176,4 +176,24 @@ public class PostRepositoryImpl
 
     }
 
+    @Override
+    public boolean existsById(
+            Integer id
+    ) {
+
+        return DbClientProvider.getDbClient()
+                .execute()
+                .query(
+                        """
+                        SELECT id
+                        FROM posts
+                        WHERE id = ?
+                        """,
+                        id
+                )
+                .findFirst()
+                .isPresent();
+
+    }
+
 }

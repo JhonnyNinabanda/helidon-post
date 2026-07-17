@@ -33,6 +33,7 @@ import com.programacion.web.service.TodoService;
 import com.programacion.web.service.UserService;
 
 import io.helidon.webserver.WebServer;
+import io.helidon.http.HeaderNames;
 
 public class Main {
 
@@ -55,7 +56,10 @@ public class Main {
                 new PostRepositoryImpl();
 
         PostService postService =
-                new PostService(postRepository);
+                new PostService(
+                        postRepository,
+                        userService
+                );
 
         PostHandler postHandler =
                 new PostHandler(postService);
@@ -66,7 +70,10 @@ public class Main {
                 new CommentRepositoryImpl();
 
         CommentService commentService =
-                new CommentService(commentRepository);
+                new CommentService(
+                        commentRepository,
+                        postService
+                );
 
         CommentHandler commentHandler =
                 new CommentHandler(commentService);
@@ -77,7 +84,10 @@ public class Main {
                 new AlbumRepositoryImpl();
 
         AlbumService albumService =
-                new AlbumService(albumRepository);
+                new AlbumService(
+                        albumRepository,
+                        userService
+                );
 
         AlbumHandler albumHandler =
                 new AlbumHandler(albumService);
@@ -88,7 +98,10 @@ public class Main {
                 new PhotoRepositoryImpl();
 
         PhotoService photoService =
-                new PhotoService(photoRepository);
+                new PhotoService(
+                        photoRepository,
+                        albumService
+                );
 
         PhotoHandler photoHandler =
                 new PhotoHandler(photoService);
@@ -99,7 +112,10 @@ public class Main {
                 new TodoRepositoryImpl();
 
         TodoService todoService =
-                new TodoService(todoRepository);
+                new TodoService(
+                        todoRepository,
+                        userService
+                );
 
         TodoHandler todoHandler =
                 new TodoHandler(todoService);
